@@ -9,14 +9,14 @@ const createRequest = (options = {}) => {
     if (options.method === 'POST') {
         formData = new FormData;
         if ('data' in options) {
-            for (key in options.data) {
+            for (let key in options.data) {
                 formData.set(key, options.data[key])
             };
         };
     } else {
         if ('data' in options) {
             param += '?';
-            for (key in options.data) {
+            for (let key in options.data) {
                 param += encodeURI(key) + '=';
                 param += encodeURI(options.data[key]) + '&';
             }
@@ -30,7 +30,7 @@ const createRequest = (options = {}) => {
         }
     });
     if ('headers' in options) {
-        for (key in options.headers) {
+        for (let key in options.headers) {
             xhr.setRequestHeader(key, options.headers[key]);
         }
     };
