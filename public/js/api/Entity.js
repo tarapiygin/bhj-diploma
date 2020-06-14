@@ -26,11 +26,10 @@ class Entity {
    * что наследуется от Entity)
    * */
   static create( data, callback = f => f ) {
-    const newData = data;
-    newData['_method'] = 'PUT';
+    const modifiedData = Object.assign({ _method: 'PUT' }, data );
     const options = {
       url: Entity.URL, // адрес
-      data: newData,
+      data: modifiedData,
       responseType: 'json', // формат, в котором необходимо выдать результат
       method: 'POST', // метод запроса
       callback: callback,
@@ -43,11 +42,10 @@ class Entity {
    * (в зависимости от того, что наследуется от Entity)
    * */
   static get( id = '', data, callback = f => f ) {
-    const newData = data;
-    newData['id'] = id;
+    const modifiedData = Object.assign({id: id}, data );
     const options = {
       url: Entity.URL, // адрес
-      data: newData,
+      data: modifiedData,
       responseType: 'json', // формат, в котором необходимо выдать результат
       method: 'GET', // метод запроса
       callback: callback,
@@ -60,12 +58,10 @@ class Entity {
    * (в зависимости от того, что наследуется от Entity)
    * */
   static remove( id = '', data, callback = f => f ) {
-    const newData = data;
-    newData['id'] = id;
-    newData['_method'] = 'DELETE';
+    const modifiedData = Object.assign({id: id, _method: 'DELETE'}, data);
     const options = {
       url: Entity.URL, // адрес
-      data: newData,
+      data: modifiedData,
       responseType: 'json', // формат, в котором необходимо выдать результат
       method: 'POST', // метод запроса
       callback: callback,
