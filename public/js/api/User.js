@@ -11,7 +11,8 @@ class User {
    * локальном хранилище.
    * */
   static setCurrent(user) {
-    localStorage.setItem('user', user);
+    const obj = JSON.stringify(user)
+    localStorage.setItem('user', obj);
   }
 
   /**
@@ -27,7 +28,7 @@ class User {
    * из локального хранилища
    * */
   static current() {
-    const user = localStorage.getItem('user');
+    const user = JSON.parse(localStorage.getItem('user'));
     if (user !== null) {
       return user;
     }
