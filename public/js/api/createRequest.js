@@ -29,7 +29,7 @@ const createRequest = (options = {}) => {
     xhr.open(options.method, options.url + param)
 
     if ('headers' in options) {
-        for (key in options.headers) {
+        for (let key in options.headers) {
             xhr.setRequestHeader(key, options.headers[key]);
         }
     };
