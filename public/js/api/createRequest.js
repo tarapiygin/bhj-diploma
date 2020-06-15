@@ -40,6 +40,7 @@ const createRequest = (options = {}) => {
             else options.callback(err = null, this.response);
         }
     });
+
     xhr.responseType = options.responseType;
     xhr.withCredentials = true;
     
