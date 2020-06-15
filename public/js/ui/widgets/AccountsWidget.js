@@ -12,8 +12,15 @@ class AccountsWidget {
    * Если переданный элемент не существует,
    * необходимо выкинуть ошибку.
    * */
-  constructor( element ) {
-
+  constructor(element) {
+    if (document.body.contains(element)) {
+      this.element = element;
+    } else {
+      const error = 'Переданный элемент не существует';
+      throw error;
+    };
+    this.registerEvents();
+    this.update();
   }
 
   /**
@@ -24,7 +31,19 @@ class AccountsWidget {
    * вызывает AccountsWidget.onSelectAccount()
    * */
   registerEvents() {
+    const accountsWidget = this;
+    const createAccountElement = document.querySelector('.create-account');
+    createAccountElement.addEventListener('click', function createNewAccount() {
+      const modal = new Modal(App.getModal('createAccount').element);
+      modal.open();
+    })
 
+    const accountList = Array.from(document.getElementsByClassName('account'));
+    accountList.forEach(element => {
+      element.addEventListener('click', function selectAccount() {
+        accountsWidget.onSelectAccount(element);
+      })
+    })
   }
 
   /**
@@ -38,7 +57,19 @@ class AccountsWidget {
    * метода renderItem()
    * */
   update() {
-
+    if (User.current() !== undefined) {
+      const accountsWidget = this;
+      function getAccountList(err, response) {
+        if (response && response.data) {
+          const accountList = response.data;
+          accountsWidget.clear();
+          accountList.forEach(element => {
+            accountsWidget.renderItem(element);
+          });
+        };
+      };
+      Account.list({}, getAccountList);
+    }
   }
 
   /**
@@ -47,7 +78,10 @@ class AccountsWidget {
    * в боковой колонке
    * */
   clear() {
-
+    const accountList = Array.from(document.getElementsByClassName('account'));
+    accountList.forEach(element => {
+      element.remove();
+    })
   }
 
   /**
@@ -57,8 +91,11 @@ class AccountsWidget {
    * счёта класс .active.
    * Вызывает App.showPage( 'transactions', { account_id: id_счёта });
    * */
-  onSelectAccount( element ) {
-
+  onSelectAccount(element) {
+    const activeAccount = Array.from(document.querySelector('.account.active'));
+    activeAccount.classList.remove('active');
+    element.classList.add('active');
+    App.showPage('transactions', { account_id: element.dataset.id })
   }
 
   /**
@@ -66,8 +103,15 @@ class AccountsWidget {
    * отображения в боковой колонке.
    * item - объект с данными о счёте
    * */
-  getAccountHTML( item ) {
-
+  getAccountHTML(item) {
+    const html = `
+    <li class="active account" data-id="${item.id}">
+      <a href="#">
+          <span>${item.name}</span> /
+          <span>${item.sum} ₽</span>
+      </a>
+    </li>`
+    return html;
   }
 
   /**
@@ -76,7 +120,7 @@ class AccountsWidget {
    * AccountsWidget.getAccountHTML HTML-код элемента
    * и добавляет его внутрь элемента виджета
    * */
-  renderItem( item ) {
-
+  renderItem(item) {
+    this.element.innerHtml += this.getAccountHTML(item);
   }
 }
