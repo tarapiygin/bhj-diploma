@@ -42,7 +42,7 @@ class Entity {
    * (в зависимости от того, что наследуется от Entity)
    * */
   static get( id = '', data, callback = f => f ) {
-    const modifiedData = Object.assign({id: id}, data );
+    const modifiedData = Object.assign({id}, data );
     const options = {
       url: Entity.URL, // адрес
       data: modifiedData,
@@ -58,7 +58,7 @@ class Entity {
    * (в зависимости от того, что наследуется от Entity)
    * */
   static remove( id = '', data, callback = f => f ) {
-    const modifiedData = Object.assign({id: id, _method: 'DELETE'}, data);
+    const modifiedData = Object.assign({id, _method: 'DELETE'}, data);
     const options = {
       url: Entity.URL, // адрес
       data: modifiedData,
