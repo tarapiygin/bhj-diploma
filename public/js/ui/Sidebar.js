@@ -18,9 +18,9 @@ class Sidebar {
    * при нажатии на кнопку .sidebar-toggle
    * */
   static initToggleButton() {
-    const sidebar = document.getElementsByClassName('sidebar-mini')[0];
-    const sidebarToggle = document.getElementsByClassName('sidebar-toggle')[0];
-    sidebarToggle.addEventListener('click', ()=>{
+    const sidebar = document.querySelector('.sidebar-mini');
+    const sidebarToggle = document.querySelector('.sidebar-toggle');
+    sidebarToggle.addEventListener('click', () => {
       sidebar.classList.toggle('sidebar-open');
       sidebar.classList.toggle('sidebar-collapse');
     });
@@ -34,7 +34,25 @@ class Sidebar {
    * выходу устанавливает App.setState( 'init' )
    * */
   static initAuthLinks() {
+    const registerItem = document.querySelector('.menu-item_register');
+    registerItem.addEventListener('click', function registerHandler() {
+      const modal = new Modal(App.getModal('register').element);
+      modal.open();
+    });
 
+    const loginItem = document.querySelector('.menu-item_login');
+    loginItem.addEventListener('click', function loginHandler() {
+      const modal = new Modal(App.getModal('login').element);
+      modal.open();
+    });
+
+    const logoutItem = document.querySelector('.menu-item_logout');
+    logoutItem.addEventListener('click', function logoutHandler() {
+      function resetState(err, response) {
+        if (response.success === true) App.setState('init');
+      };
+      User.logout(data = {}, callback = resetState);
+    });
   }
 
 }
