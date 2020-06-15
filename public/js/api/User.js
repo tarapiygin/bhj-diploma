@@ -114,7 +114,7 @@ class User {
     const url = User.URL + '/logout';
     const modifiedCallback = (err, response) => {
       if (response && response.success === true) {
-        User.unsetCurrent;
+        User.unsetCurrent();
       }
       callback(err, response);
     }
