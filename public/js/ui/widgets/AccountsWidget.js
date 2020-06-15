@@ -32,14 +32,14 @@ class AccountsWidget {
    * */
   registerEvents() {
     const accountsWidget = this;
-    const createAccountElement = document.querySelector('.create-account');
-    createAccountElement.addEventListener('click', function createNewAccount(e) {
-      const modal = new Modal(App.getModal('createAccount').element);
-      modal.open();
-    })
-
-
     this.element.addEventListener('click', function selectAccount(e) {
+      const createAccountElement = e.target.closest('.create-account');
+      if(createAccountElement !== null){
+        e.stopPropagation()
+        const modal = new Modal(App.getModal('createAccount').element);
+        modal.open();
+      }
+
       const accountElement = e.target.closest('.account');
       if (accountElement !== null) {
         e.stopPropagation()
