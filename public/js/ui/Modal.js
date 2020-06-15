@@ -13,8 +13,7 @@ class Modal {
    * необходимо выкинуть ошибку.
    * */
   constructor(element) {
-    const pageElement = document.getElementById(element.id);
-    if(pageElement === element){
+    if (document.body.contains(element)) {
       this.element = element;
     } else {
       const error = 'Переданный элемент не существует';
