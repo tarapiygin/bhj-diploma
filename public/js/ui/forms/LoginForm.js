@@ -20,7 +20,7 @@ class LoginForm extends AsyncForm {
         modal.close();
       }
     }
-    User.login(options, checkLogin);
+    User.login(options.data, checkLogin);
   }
 }
 

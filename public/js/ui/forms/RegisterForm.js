@@ -11,6 +11,7 @@ class RegisterForm extends AsyncForm {
    * и закрывает окно, в котором находится форма
    * */
   onSubmit( options ) {
+    debugger;
     const form = this;
     function checkRegistration(err, response){
       if (response && response.user) {
@@ -20,6 +21,6 @@ class RegisterForm extends AsyncForm {
         modal.close();
       }
     }
-    User.register(options, checkRegistration);
+    User.register(options.data, checkRegistration);
   }
 }
