@@ -33,16 +33,18 @@ class AccountsWidget {
   registerEvents() {
     const accountsWidget = this;
     const createAccountElement = document.querySelector('.create-account');
-    createAccountElement.addEventListener('click', function createNewAccount() {
+    createAccountElement.addEventListener('click', function createNewAccount(e) {
       const modal = new Modal(App.getModal('createAccount').element);
       modal.open();
     })
 
-    const accountList = Array.from(document.getElementsByClassName('account'));
-    accountList.forEach(element => {
-      element.addEventListener('click', function selectAccount() {
-        accountsWidget.onSelectAccount(element);
-      })
+
+    this.element.addEventListener('click', function selectAccount(e) {
+      const accountElement = e.target.closest('.account');
+      if (accountElement !== null) {
+        e.stopPropagation()
+        accountsWidget.onSelectAccount(accountElement);
+      }
     })
   }
 
@@ -63,8 +65,8 @@ class AccountsWidget {
         if (response && response.data) {
           const accountList = response.data;
           accountsWidget.clear();
-          accountList.forEach(element => {
-            accountsWidget.renderItem(element);
+          accountList.forEach(item => {
+            accountsWidget.renderItem(item);
           });
         };
       };
@@ -92,8 +94,8 @@ class AccountsWidget {
    * Вызывает App.showPage( 'transactions', { account_id: id_счёта });
    * */
   onSelectAccount(element) {
-    const activeAccount = Array.from(document.querySelector('.account.active'));
-    activeAccount.classList.remove('active');
+    const activeAccount = document.querySelector('.account.active');
+    if (activeAccount !== null) activeAccount.classList.remove('active');
     element.classList.add('active');
     App.showPage('transactions', { account_id: element.dataset.id })
   }
@@ -105,7 +107,7 @@ class AccountsWidget {
    * */
   getAccountHTML(item) {
     const html = `
-    <li class="active account" data-id="${item.id}">
+    <li class="account" data-id="${item.id}">
       <a href="#">
           <span>${item.name}</span> /
           <span>${item.sum} ₽</span>
@@ -121,6 +123,6 @@ class AccountsWidget {
    * и добавляет его внутрь элемента виджета
    * */
   renderItem(item) {
-    this.element.innerHtml += this.getAccountHTML(item);
+    this.element.innerHTML += this.getAccountHTML(item);
   }
 }
