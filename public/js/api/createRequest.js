@@ -40,12 +40,7 @@ const createRequest = (options = {}) => {
             else options.callback(err = null, this.response);
         }
     });
-
-    if ('headers' in options) {
-        for (let key in options.headers) {
-            xhr.setRequestHeader(key, options.headers[key]);
-        }
-    };
+    
     xhr.responseType = options.responseType;
     xhr.withCredentials = true;
     
