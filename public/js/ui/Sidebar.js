@@ -51,7 +51,7 @@ class Sidebar {
       function resetState(err, response) {
         if (response.success === true) App.setState('init');
       };
-      User.logout(data = {}, callback = resetState);
+      User.logout({}, resetState);
     });
   }
 
