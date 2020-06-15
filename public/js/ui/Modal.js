@@ -13,10 +13,11 @@ class Modal {
    * необходимо выкинуть ошибку.
    * */
   constructor(element) {
-    if ('innerHTML' in element && element.innerHTML !== '') {
+    const pageElement = document.getElementById(element.id);
+    if(pageElement === element){
       this.element = element;
     } else {
-      const error = 'Передаваемый в конструктор елемент не может быть пустым';
+      const error = 'Переданный элемент не существует';
       throw error;
     };
     this.registerEvents();
