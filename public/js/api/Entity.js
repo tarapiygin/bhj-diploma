@@ -11,7 +11,7 @@ class Entity {
    * */
   static list( data, callback = f => f ) {
     const options = {
-      url: Entity.URL, // адрес
+      url: this.URL, // адрес
       data: data,
       responseType: 'json', // формат, в котором необходимо выдать результат
       method: 'GET', // метод запроса
@@ -28,7 +28,7 @@ class Entity {
   static create( data, callback = f => f ) {
     const modifiedData = Object.assign({ _method: 'PUT' }, data );
     const options = {
-      url: Entity.URL, // адрес
+      url: this.URL, // адрес
       data: modifiedData,
       responseType: 'json', // формат, в котором необходимо выдать результат
       method: 'POST', // метод запроса
@@ -44,7 +44,7 @@ class Entity {
   static get( id = '', data, callback = f => f ) {
     const modifiedData = Object.assign({id}, data );
     const options = {
-      url: Entity.URL, // адрес
+      url: this.URL, // адрес
       data: modifiedData,
       responseType: 'json', // формат, в котором необходимо выдать результат
       method: 'GET', // метод запроса
@@ -60,7 +60,7 @@ class Entity {
   static remove( id = '', data, callback = f => f ) {
     const modifiedData = Object.assign({id, _method: 'DELETE'}, data);
     const options = {
-      url: Entity.URL, // адрес
+      url: this.URL, // адрес
       data: modifiedData,
       responseType: 'json', // формат, в котором необходимо выдать результат
       method: 'POST', // метод запроса
