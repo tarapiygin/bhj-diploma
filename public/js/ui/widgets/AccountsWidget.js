@@ -36,7 +36,7 @@ class AccountsWidget {
       e.preventDefault();
       const createAccountElement = e.target.closest('.create-account');
       if(createAccountElement !== null){
-        e.stopPropagation()
+        e.stopPropagation();
         const modal = new Modal(App.getModal('createAccount').element);
         modal.open();
       }
