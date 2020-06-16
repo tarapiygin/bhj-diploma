@@ -33,6 +33,7 @@ class AccountsWidget {
   registerEvents() {
     const accountsWidget = this;
     this.element.addEventListener('click', function selectAccount(e) {
+      e.preventDefault();
       const createAccountElement = e.target.closest('.create-account');
       if(createAccountElement !== null){
         e.stopPropagation()
