@@ -10,15 +10,26 @@ class TransactionsPage {
    * Сохраняет переданный элемент и регистрирует события
    * через registerEvents()
    * */
-  constructor( element ) {
-
+  constructor(element) {
+    if (document.body.contains(element)) {
+      this.element = element;
+    } else {
+      const error = 'Переданный элемент не существует';
+      throw error;
+    };
+    this.lastOptions = null;
+    this.registerEvents();
   }
 
   /**
    * Вызывает метод render для отрисовки страницы
    * */
   update() {
-
+    if(this.lastOptions !== null){
+      this.render(this.lastOptions);
+    } else{
+      this.render();
+    };
   }
 
   /**
@@ -28,7 +39,21 @@ class TransactionsPage {
    * TransactionsPage.removeAccount соответственно
    * */
   registerEvents() {
+    const transactionsPage = this;
 
+    this.element.addEventListener('click', function transactionHandler(e) {
+      const removeAccountButton = e.target.closest('.remove-account');
+      const removeTransactionButton = e.target.closest('.transaction__remove');
+      if (removeAccountButton !== null) {
+        e.stopPropagation();
+        transactionsPage.removeAccount();
+      }
+
+      if (removeTransactionButton !== null) {
+        e.stopPropagation();
+        transactionsPage.removeTransaction(this.dataset.id);
+      }
+    });
   }
 
   /**
@@ -40,7 +65,17 @@ class TransactionsPage {
    * для обновления приложения
    * */
   removeAccount() {
-
+    if (this.lastOptions !== null) {
+      const result = confirm('Вы действительно хотите удалить счёт?');
+      if (result) {
+        function removeAccount(err, response) {
+          if (response && response.success) {
+            App.update();
+          };
+        };
+        Account.remove(this.lastOptions.account_id, {}, removeAccount);
+      };
+    };
   }
 
   /**
@@ -48,8 +83,18 @@ class TransactionsPage {
    * подтверждеия действия (с помощью confirm()).
    * По удалению транзакции вызовите метод App.update()
    * */
-  removeTransaction( id ) {
-
+  removeTransaction(id) {
+    if (this.lastOptions !== null) {
+      const result = confirm('Вы действительно хотите удалить эту транзакцию?');
+      if (result) {
+        function removeTransaction(err, response) {
+          if (response && response.success) {
+            App.update();
+          };
+        };
+        Transaction.remove(id, {}, removeTransaction);
+      };
+    };
   }
 
   /**
@@ -58,8 +103,26 @@ class TransactionsPage {
    * Получает список Transaction.list и полученные данные передаёт
    * в TransactionsPage.renderTransactions()
    * */
-  render( options ) {
+  render(options) {
+    if (options && options.account_id) {
 
+      const transactionsPage = this;
+      this.lastOptions = options;
+      function getAccount(err, response) {
+        if (response && response.data) {
+          const account = response.data.find(item => item.id === options.account_id);
+          transactionsPage.renderTitle(account.name);
+        };
+      };
+      Account.get(options.account_id, {}, getAccount);
+
+      function getTransactionList(err, response) {
+        if (response && response.data) {
+          transactionsPage.renderTransactions(response.data);
+        };
+      };
+      Transaction.list(options, getTransactionList);
+    };
   }
 
   /**
@@ -68,21 +131,24 @@ class TransactionsPage {
    * Устанавливает заголовок: «Название счёта»
    * */
   clear() {
-
+    this.renderTransactions([]);
+    this.renderTitle('Название счёта');
+    this.lastOptions = null;
   }
 
   /**
    * Устанавливает заголовок в элемент .content-title
    * */
-  renderTitle( name ) {
-
+  renderTitle(name) {
+    const contentTitle = this.element.querySelector('.content-title');
+    contentTitle.textContent = name;
   }
 
   /**
    * Форматирует дату в формате 2019-03-10 03:20:41 (строка)
    * в формат «10 марта 2019 г. в 03:20»
    * */
-  formatDate( date ) {
+  formatDate(date) {
 
   }
 
@@ -90,7 +156,7 @@ class TransactionsPage {
    * Формирует HTML-код транзакции (дохода или расхода).
    * item - объект с информацией о транзакции
    * */
-  getTransactionHTML( item ) {
+  getTransactionHTML(item) {
 
   }
 
@@ -98,7 +164,7 @@ class TransactionsPage {
    * Отрисовывает список транзакций на странице
    * используя getTransactionHTML
    * */
-  renderTransactions( data ) {
+  renderTransactions(data) {
 
   }
 }
