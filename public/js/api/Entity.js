@@ -42,10 +42,10 @@ class Entity {
    * (в зависимости от того, что наследуется от Entity)
    * */
   static get( id = '', data, callback = f => f ) {
-    const modifiedData = Object.assign({id}, data );
+    const modifiedURL = (id !== '') ? this.URL + '/' + id : this.URL;
     const options = {
-      url: this.URL, // адрес
-      data: modifiedData,
+      url: modifiedURL, // адрес
+      data: data,
       responseType: 'json', // формат, в котором необходимо выдать результат
       method: 'GET', // метод запроса
       callback: callback,
