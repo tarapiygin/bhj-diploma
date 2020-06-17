@@ -64,8 +64,8 @@ class AccountsWidget {
       const accountsWidget = this;
       function getAccountList(err, response) {
         if (response && response.data) {
-          const accountList = response.data;
           accountsWidget.clear();
+          const accountList = response.data;
           accountList.forEach(item => {
             accountsWidget.renderItem(item);
           });

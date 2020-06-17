@@ -25,9 +25,9 @@ class TransactionsPage {
    * Вызывает метод render для отрисовки страницы
    * */
   update() {
-    if(this.lastOptions !== null){
+    if (this.lastOptions !== null) {
       this.render(this.lastOptions);
-    } else{
+    } else {
       this.render();
     };
   }
@@ -51,7 +51,7 @@ class TransactionsPage {
 
       if (removeTransactionButton !== null) {
         e.stopPropagation();
-        transactionsPage.removeTransaction(this.dataset.id);
+        transactionsPage.removeTransaction(removeTransactionButton.dataset.id);
       }
     });
   }
@@ -74,6 +74,7 @@ class TransactionsPage {
           };
         };
         Account.remove(this.lastOptions.account_id, {}, removeAccount);
+        this.clear();
       };
     };
   }
@@ -110,15 +111,23 @@ class TransactionsPage {
       this.lastOptions = options;
       function getAccount(err, response) {
         if (response && response.data) {
-          const account = response.data.find(item => item.id === options.account_id);
-          transactionsPage.renderTitle(account.name);
+          transactionsPage.renderTitle(response.data.name);
         };
       };
       Account.get(options.account_id, {}, getAccount);
 
       function getTransactionList(err, response) {
         if (response && response.data) {
-          transactionsPage.renderTransactions(response.data);
+          const formatData = response.data.map(item =>{
+            return {
+              "id": item.id,
+              "type": item.type.toLowerCase(),
+              "name": item.name,
+              "date": item.created_at,
+              "sum": item.sum
+            }
+          })
+          transactionsPage.renderTransactions(formatData);
         };
       };
       Transaction.list(options, getTransactionList);
@@ -131,9 +140,9 @@ class TransactionsPage {
    * Устанавливает заголовок: «Название счёта»
    * */
   clear() {
+    this.lastOptions = null;
     this.renderTransactions([]);
     this.renderTitle('Название счёта');
-    this.lastOptions = null;
   }
 
   /**
@@ -149,7 +158,12 @@ class TransactionsPage {
    * в формат «10 марта 2019 г. в 03:20»
    * */
   formatDate(date) {
-
+    const nameMonth = ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря']
+    const dateObj = new Date(date);
+    const hours = `${(dateObj.getHours() < 10) ? '0' + dateObj.getHours() : dateObj.getHours()}`;
+    const minutes = `${(dateObj.getMinutes() < 10) ? '0' + dateObj.getMinutes() : dateObj.getMinutes()}`;
+    const formatDate = `${dateObj.getDate()} ${nameMonth[dateObj.getMonth()]} ${dateObj.getFullYear()} г. в ${hours}:${minutes}`;
+    return formatDate;
   }
 
   /**
@@ -157,7 +171,32 @@ class TransactionsPage {
    * item - объект с информацией о транзакции
    * */
   getTransactionHTML(item) {
-
+    const TransactionHTML = `
+    <div class="transaction transaction_${item.type} row">
+      <div class="col-md-7 transaction__details">
+        <div class="transaction__icon">
+            <span class="fa fa-money fa-2x"></span>
+        </div>
+        <div class="transaction__info">
+            <h4 class="transaction__title">${item.name}</h4>
+            <!-- дата -->
+            <div class="transaction__date">${this.formatDate(item.date)}</div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="transaction__summ">
+        <!--  сумма -->
+            ${item.sum} <span class="currency">₽</span>
+        </div>
+      </div>
+      <div class="col-md-2 transaction__controls">
+          <!-- в data-id нужно поместить id -->
+          <button class="btn btn-danger transaction__remove" data-id="${item.id}">
+              <i class="fa fa-trash"></i>  
+          </button>
+      </div>
+    </div>`
+    return TransactionHTML;
   }
 
   /**
@@ -165,6 +204,11 @@ class TransactionsPage {
    * используя getTransactionHTML
    * */
   renderTransactions(data) {
-
+    let commonTransactionHTML = '';
+    data.forEach(transaction => {
+      commonTransactionHTML += this.getTransactionHTML(transaction);
+    });
+    const contentElement = this.element.querySelector('.content');
+    contentElement.innerHTML = commonTransactionHTML;
   }
 }
